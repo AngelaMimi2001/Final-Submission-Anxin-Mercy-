@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Context</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
+
+    /* === Global Base === */
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at 30% 30%, rgba(0, 255, 200, 0.15), transparent 60%),
+        radial-gradient(circle at 70% 70%, rgba(150, 0, 255, 0.1), transparent 60%),
+        #000;
+      color: #fff;
+      text-align: center;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 18vh 10vw 8vh;
+    }
+
+    /* === Navigation Bar === */
+    .top-nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+      z-index: 10;
+      padding: 0.6rem 0;
+      text-align: center;
+    }
+
+    .top-nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: inline-flex;
+      gap: 1.5rem;
+    }
+
+    .top-nav ul li a {
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+    }
+
+    .top-nav ul li a:hover {
+      color: #00ffc6;
+      text-shadow: 0 0 10px rgba(0, 255, 200, 0.5);
+    }
+
+    /* === Headings and Text === */
+    h1 {
+      font-size: 3.3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #00ffc6, #a370ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+      text-shadow: 0 0 15px rgba(150, 0, 255, 0.3);
+    }
+
+    h2 {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.7);
+      letter-spacing: 0.15em;
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+    }
+
+    p {
+      max-width: 900px;
+      margin: 0 auto 2rem;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.1rem;
+      font-weight: 300;
+      line-height: 1.8;
+    }
+
+    body p {
+      text-align: left;
+    }
+
+
+    /* === Image Gallery === */
+    .image-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      margin: 3rem auto 5rem;
+      padding: 1rem 0;
+      width: 100%;
+      max-width: 950px;
+    }
+
+    .image-gallery img {
+      width: 400px;
+      height: auto;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0, 255, 200, 0.2);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    .image-gallery img:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 40px rgba(0, 255, 200, 0.4);
+    }
+
+    /* === Insight Blocks (Market) === */
+    .insights {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2.5rem;
+      max-width: 1100px;
+      margin: 6rem auto 2rem;
+    }
+
+    @media (max-width: 800px) {
+      .insights {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .block {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 1.8rem;
+      box-shadow: inset 0 0 25px rgba(0, 255, 200, 0.08),
+        0 0 30px rgba(150, 0, 255, 0.1);
+      backdrop-filter: blur(6px);
+      text-align: left;
+    }
+
+    .block h3 {
+      color: #00ffc6;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .block p {
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 300;
+      line-height: 1.8;
+      font-size: 1.05rem;
+    }
+
+    /* === Literature Cards === */
+    .literature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      width: 100%;
+      max-width: 1200px;
+      margin: 3rem auto 4rem;
+    }
+
+    .lit-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 1rem;
+      box-shadow: 0 0 15px rgba(0, 255, 200, 0.1);
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: left;
+    }
+
+    .lit-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .lit-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+
+    .lit-card h3 {
+      color: #00ffc6;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .lit-card p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+    }
+
+    .lit-card a {
+      color: #a370ff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .lit-card a:hover {
+      color: #00ffc6;
+      text-shadow: 0 0 8px rgba(0, 255, 200, 0.5);
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2.4rem;
+      }
+
+      .lit-card img {
+        height: 180px;
+      }
+    }
+
+    /* === Idea Section === */
+    .idea {
+      max-width: 900px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .idea h3 {
+      color: #00ffc6;
+      margin-bottom: 0.5rem;
+      font-size: 1.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .idea p {
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 300;
+      line-height: 1.8;
+    }
+
+    /* === Misc and Responsive === */
+    .divider {
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      padding-top: 2rem;
+    }
+
+
+
+    /* === UML === */
+
+    .uml-page {
+      margin: 0;
+      min-height: 100vh;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at 25% 25%, rgba(0, 255, 200, 0.15), transparent 60%),
+        radial-gradient(circle at 75% 80%, rgba(150, 0, 255, 0.1), transparent 60%),
+        #000;
+      color: #fff;
+      text-align: center;
+      padding: 0;
+    }
+
+    .uml-nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+      z-index: 10;
+      padding: 0.6rem 0;
+      text-align: center;
+    }
+
+    .uml-nav-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: inline-flex;
+      gap: 1.5rem;
+    }
+
+    .uml-nav-link {
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+    }
+
+    .uml-nav-link:hover {
+      color: #00ffc6;
+      text-shadow: 0 0 10px rgba(0, 255, 200, 0.5);
+    }
+
+    .uml-heading-main {
+      font-size: 3.3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #00ffc6, #a370ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+      margin-top: 16vh;
+      margin-bottom: 0.8rem;
+      text-shadow: 0 0 15px rgba(150, 0, 255, 0.3);
+    }
+
+    .uml-subtitle {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 2rem;
+    }
+
+    .uml-paragraph {
+      max-width: 900px;
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.8;
+      font-weight: 300;
+      margin: 0 auto 2.5rem;
+      text-align: left;
+    }
+
+    .uml-list {
+      max-width: 880px;
+      margin: 1rem auto 2.5rem;
+      text-align: left;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.8;
+    }
+
+    .uml-list li {
+      margin-bottom: 0.6rem;
+    }
+
+
+
+    .uml-highlight {
+      color: #00ffc6;
+      font-weight: 700;
+    }
+
+    .uml-gallery {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3rem;
+      width: 100%;
+      max-width: 1000px;
+      margin: 3rem auto 6rem;
+    }
+
+    .uml-image {
+      width: 100%;
+      max-width: 950px;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    .uml-image:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 40px rgba(0, 255, 200, 0.4);
+    }
+
+    /* === Storyboard === */
+    .sb-page-root {
+      margin: 0;
+      min-height: 100vh;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at 25% 25%, rgba(0, 255, 200, 0.15), transparent 60%),
+        radial-gradient(circle at 75% 80%, rgba(150, 0, 255, 0.1), transparent 60%),
+        #000;
+      color: #fff;
+      text-align: center;
+      padding: 0;
+    }
+
+    .sb-title-main {
+      font-size: 3.3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #00ffc6, #a370ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+      margin-top: 16vh;
+      margin-bottom: 0.8rem;
+      text-shadow: 0 0 15px rgba(150, 0, 255, 0.3);
+    }
+
+    .sb-title-sub {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 2rem;
+    }
+
+    .sb-section-heading {
+      font-size: 1.2rem;
+      color: #00ffc6;
+      margin: 3rem auto 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .sb-paragraph {
+      max-width: 900px;
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.8;
+      font-weight: 300;
+      margin: 0 auto 1.5rem;
+      text-align: left;
+    }
+
+    .sb-gallery-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2.5rem;
+      width: 100%;
+      max-width: 1000px;
+      margin: 2rem auto 5rem;
+    }
+
+    .sb-section-block {
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .sb-frame-image {
+      width: 70%;
+      max-width: 950px;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    .sb-frame-image:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 40px rgba(0, 255, 200, 0.4);
+    }
+  </style>
+</head>
+
+
+
+<body>
+  <!-- Context -->
+  <h1>Context</h1>
+  <p>
+    Pets have rich natural instincts, such as play, scenting, hunting, exploring. But indoor spaces rarely support them.
+    At the same
+    time, many people love pets but hesitate to adopt due to concerns about cleanliness, responsibility, or lifestyle
+    constraints.
+    This project explores how a modular swarm-robotic system can create a responsive, low-maintenance environment that
+    supports
+    feline wellbeing while reducing the burdens that often prevent people from owning pets.
+  </p>
+
+
+
+  <!-- Market -->
+  <h1>Market Analysis</h1>
+
+  <p>
+    The pet-tech market continues to grow. A major underserved segment includes individuals who love pets but avoid
+    adoption due
+    to concerns about cleaning, feeding routines, odor control, and long-term commitment. Current products focus
+    on automation but remain single function.
+  </p>
+
+  <p>
+    Our project explores a new generation of responsive and adaptive pet systems—products that can sense, react, and
+    self-adjust to environmental and pet behavioral changes in a more natural way. This emerging direction shifts from
+    simple control-based systems to intelligent, bio-inspired, and empathetic experiences.
+  </p>
+
+  <div class="image-gallery">
+    <img src="images/toy1.png" alt="Smart Storage Pet Product">
+    <img src="images/toy2.png" alt="Pet Product 2">
+    <img src="images/PetPace-Smart-Dog-Collar-nora-lying-behind-the-product-1030x824.jpg" alt="Pet Product 3">
+  </div>
+
+  <div class="insights">
+    <div class="block">
+      <h3>From Passive Products → to Responsive Systems</h3>
+      <p>
+        Most current devices require user control or app-based input. There is an opportunity for self-reactive systems
+        that function independently and intuitively.
+      </p>
+    </div>
+
+    <div class="block">
+      <h3>From Automation → to Adaptation</h3>
+      <p>
+        Existing Solutions focuses on repeating routines. A next-generation pet system could recognize environmental
+        cues like temperature and humidity, adjusting solutions accordingly.
+      </p>
+    </div>
+
+    <div class="block">
+      <h3>From Data → to Experience</h3>
+      <p>
+        Current smart pet products emphasize data metrics, which often remain abstract to users.
+        A responsive design instead uses tangible cues—color changes or surface texture to make the pet’s needs visible.
+      </p>
+    </div>
+
+    <div class="block">
+      <h3>From Efficiency → to Empathy</h3>
+      <p>
+        The smart pet market has optimized convenience but overlooked emotion.
+        Designing systems that respond to pets’ states can foster empathy, strengthening the bond between pets and
+        owners.
+      </p>
+    </div>
+  </div>
+
+
+
+
+  <!-- HMW -->
+  <br>
+  <br>
+  <br>
+  <br>
+  <h1>How Might We</h1>
+  <h2>Design for Smart Pet Systems</h2>
+  <p>
+    How might we create smart and responsive pet products that intuitively adapt to pets’ needs, creating more natural
+    and meaningful interactions?
+  </p>
+
+  <div class="image-gallery">
+    <img src="images/1.jpg" alt="Pet Design Diagram 1">
+    <img src="images/2.jpg" alt="Pet Design Diagram 2">
+    <img src="images/3.jpg" alt="Pet Design Diagram 3">
+  </div>
+
+
+
+  <!-- Literature -->
+  <h1>Literature Review</h1>
+  <h2>Design for Smart Pet Systems</h2>
+
+  <div class="literature-grid">
+    <div class="lit-card">
+      <img src="literature/s-l640.jpg" alt="Smart Materials Cover">
+      <h3>Smart Materials and Structures</h3>
+      <p>Gandhi and Thompson's foundational work introduces smart materials that respond dynamically to environmental
+        stimuli.</p>
+      <a href="https://books.google.com/books?id=5NyH0h1OgisC" target="_blank">Read More</a>
+    </div>
+
+    <div class="lit-card">
+      <img src="literature/OIP.jpeg" alt="Material Computation Cover">
+      <h3>Material Computation: Higher Integration in Morphogenetic Design</h3>
+      <p>Examines integration of material info into design, inspired by biological paradigms to create adaptive
+        architectural forms.</p>
+      <a href="https://onlinelibrary.wiley.com/doi/10.1002/ad.1374?msockid=2c9d9d125f536ec90b1e8b7c5e696f02"
+        target="_blank">Read More</a>
+    </div>
+
+    <div class="lit-card">
+      <img src="literature/AI-Powered-Design-2024-02.jpg" alt="AI as Co-Creator Cover">
+      <h3>AI as a Co-Creator and a Design Material</h3>
+      <p>Explores AI as a collaborative partner in design, enhancing creativity and supporting spontaneous insight
+        generation.</p>
+      <a href="https://ouci.dntb.gov.ua/en/works/4grdbDa0/" target="_blank">Read More</a>
+    </div>
+
+    <div class="lit-card">
+      <img src="literature/janines_book.jpg" alt="Biomimicry Cover">
+      <h3>Biomimicry: Innovation Inspired by Nature</h3>
+      <p>Delves into design solutions inspired by nature’s time-tested strategies for sustainable and efficient
+        innovations.</p>
+      <a href="https://biomimicry.net/product/janine-book/" target="_blank">Read More</a>
+    </div>
+
+    <div class="lit-card">
+      <img src="literature/9780822347729-us.jpg" alt="New Materialisms Cover">
+      <h3>New Materialisms: Ontology, Agency, and Politics</h3>
+      <p>Presents new materialist perspectives challenging traditional views of matter and agency in social and
+        political contexts.</p>
+      <a href="https://www.dukeupress.edu/new-materialisms" target="_blank">Read More</a>
+    </div>
+
+    <div class="lit-card">
+      <img src="literature/Em.jpg" alt="Pet Cat Feeder Cover">
+      <h3>Research on Pet Cat Feeder Design Based on Emotional Design (2022)</h3>
+      <p>Applies Norman’s emotional design theory to a smart cat feeder, integrating aesthetics, remote interaction, and
+        a fish tank.</p>
+      <a href="https://www.researchgate.net/publication/363175556_Research_on_Pet_Cat_Feeder_Design_Based_on_Emotional_Design"
+        target="_blank">Read More</a>
+    </div>
+
+    <div class="lit-card">
+      <img src="literature/Paws.jpg" alt="Smart Paws Cover">
+      <h3>Smart Paws: AI-Powered Pet Wearables (2025)</h3>
+      <p>An AI smart collar tracking pets’ vitals, activity, and emotions, providing alerts, GPS, nutrition guidance,
+        and a community platform.</p>
+      <a href="https://www.researchgate.net/publication/387806859_Smart_Paws_AI-Powered_Pet_Wearables"
+        target="_blank">Read More</a>
+    </div>
+
+    <div class="lit-card">
+      <img src="literature/Ad.jpg" alt="Advancements in Pet Care Technology Cover">
+      <h3>Advancements in Pet Care Technology: A Comprehensive Survey (2024)</h3>
+      <p>Survey of modern pet-care technologies including smart collars, feeders, cameras, telemedicine, and robotic
+        toys.</p>
+      <a href="https://www.researchgate.net/publication/399612345_Advancements_in_Pet_Care_Technology_A_Comprehensive_Survey"
+        target="_blank">Read More</a>
+    </div>
+
+  </div>
+
+
+
+  <!-- Ideas -->
+  <h1>Brainstorming Ideas</h1>
+  <h2>Design for Smart Pet Systems</h2>
+
+  <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 40px;">
+    <img src="brain/i1.png" alt="Idea 1" style="width: 30%; border-radius: 10px;">
+    <img src="brain/i2.png" alt="Idea 2" style="width: 30%; border-radius: 10px;">
+    <img src="brain/i3.jpg" alt="Idea 3" style="width: 30%; border-radius: 10px;">
+  </div>
+
+  <div class="idea">
+    <h3>Emotion-Expressive Collar</h3>
+    <p>Principle: Detects body temperature and heart-rate changes; the collar color shifts when the pet is excited,
+      anxious, or relaxed.</p>
+    <p>Meaning: Visualizes the pet’s emotional state, helping owners better understand their pet’s wellbeing.</p>
+  </div>
+
+  <div class="idea">
+    <h3>Humidity-Responsive Material</h3>
+    <p>Purpose: Placed near a pet’s water or food bowl to indicate when water is empty or food becomes damp.</p>
+    <p>Principle: Uses a hygroscopic swelling material that changes shape or color as humidity varies, triggering a
+      signal to remind the owner to refill or replace.</p>
+  </div>
+
+  <div class="idea">
+    <h3>Auto-Shaping Pet Bed</h3>
+    <p>Logic: The material slightly bends when the pet enters, automatically conforming to the body’s shape.</p>
+    <p>Function: The bed gently adjusts its form to accommodate the pet’s different resting positions.</p>
+  </div>
+
+  <div class="idea">
+    <h3>Safety-Monitoring Mat</h3>
+    <p>Function: When a pet’s paw or skin becomes abnormally wet, hot, or slippery, the mat reacts and records the
+      condition.</p>
+    <p>Helps owners identify potential health risks such as skin irritation or environmental discomfort.</p>
+  </div>
+
+  <div class="idea">
+    <h3>Bio-Inspired Skin Surface</h3>
+    <p>Shark-skin microstructures with antibacterial and anti-slip features for hygiene and comfort.</p>
+  </div>
+
+  <div class="idea">
+    <h3>Self-Cleaning Feeding Bowl</h3>
+    <p>Lotus-leaf-inspired hydrophobic coating reduces residue and promotes healthier eating.</p>
+  </div>
+
+
+
+
+
+  <!-- UML -->
+  <h1 class="uml-heading-main">UML Diagrams</h1>
+  <h2 class="uml-subtitle">Sensory Terrarium — Multi-Sensory Terrain System</h2>
+
+  <p class="uml-paragraph">
+    The <span class="uml-highlight">Sensory Terrarium</span> is a modular, multi-sensory habitat designed to help
+    domestic cats regain their natural “territorial complexity.”
+    By recreating the sensory variety found in the wild to the home, this system allows indoor cats to express natural
+    instincts,
+    reducing stress and boredom while boosting happiness through play, curiosity, and exploration.
+  </p>
+
+
+  <p class="uml-paragraph"><span class="uml-highlight">Each module serves a unique role:</span></p>
+  <ul class="uml-list">
+    <li><span class="uml-highlight">Soft Module</span> — imitates moss or grass.</li>
+    <li><span class="uml-highlight">Hollow Module</span> — mimics caves or tree hollows, offering a sense of security.
+    </li>
+    <li><span class="uml-highlight">Ramp Module</span> — introduces height variations like tree trunks, encouraging
+      climbing and exploration.</li>
+    <li><span class="uml-highlight">Scent Module</span> — holds natural or forest scent, creating emotional familiarity.
+    </li>
+  </ul>
+
+
+  <p class="uml-paragraph"><span class="uml-highlight">Digital Companion App</span></p>
+  <ul class="uml-list">
+    <li><span class="uml-highlight">Mood Log</span> — lets owners record behavioral observations such as sleeping,
+      exploring, or hiding. The system uses AI to generate cat mood cards (Calm / Curious / Active).</li>
+    <li><span class="uml-highlight">Comfort Insights</span> — provides suggestions to enhance the cat’s experience, such
+      as “Try replacing the cushion layer.”</li>
+  </ul>
+
+
+
+  <p class="uml-paragraph">
+    Together, the physical modules and the digital interface create a responsive, data-informed ecosystem. It's a system
+    that promotes natural behavior,
+    emotional balance, and ultimately, a happier and healthier indoor life for cats.
+  </p>
+
+  <div class="uml-gallery">
+    <img class="uml-image" src="images/UML.png" alt="UML Class Diagram for Sensory Terrarium">
+    <img class="uml-image" src="images/UML2.jpg" alt="System Diagram for Sensory Terrarium">
+  </div>
+
+
+
+
+  <!-- Storyboard -->
+  <h1 class="sb-title-main">Storyboard</h1>
+  <h2 class="sb-title-sub">Swarm Robotics — Cat Companion System</h2>
+
+  <div class="sb-gallery-wrapper">
+
+    <!-- Good Use -->
+    <div class="sb-section-block">
+      <h3 class="sb-section-heading">Good Use — Play &amp; Enrichment</h3>
+      <p class="sb-paragraph">
+        In the normal scenario, the swarm robots act as playful, adaptive companions for the cat.
+        The modules self-assemble, rotate or move into ramps, tunnels, and moving targets that respond to the cat’s
+        curiosity.<br>
+        Beyond play, built-in sensors and lightweight AI analysis monitor the cat’s posture, facial
+        cues, and activity levels to detect cats' mood changes. The system then gives the owner AI-driven
+        detection results and useful suggestions for cats' well-being.
+      </p>
+      <img class="sb-frame-image" src="images/Good%20Use.png"
+        alt="Storyboard showing good use of swarm robots with a happy cat">
+    </div>
+
+    <!-- Mis Use / Failure -->
+    <div class="sb-section-block">
+      <h3 class="sb-section-heading">Mis Use — Overwhelming &amp; Failure Scenario</h3>
+      <p class="sb-paragraph">
+        In the failure storyboard, the same system is pushed too far: malfunctioning modules move
+        unpredictably and get too close, gradually cornering the cat and causing fear and stress.
+        This highlights the ethical and safety risks when swarm behaviour is not properly limited,
+        monitored, or shut down in time.
+      </p>
+      <img class="sb-frame-image" src="images/Mis%20Use.png"
+        alt="Storyboard showing misuse and the cat being scared by malfunctioning robots">
+    </div>
+
+    <!-- Other Use / Cleaning -->
+    <div class="sb-section-block">
+      <h3 class="sb-section-heading">Other Use — Cleaning &amp; Home Care</h3>
+      <p class="sb-paragraph">
+        Beyond play, the swarm can switch into a cleaning mode once the cat leaves the play area.
+        The modules coordinate to sweep up fur and dust, reach under furniture, and then return to
+        the dock with a cleaner, brighter floor for the cat to rest on. The system becomes not just
+        a toy, but an everyday helper that cares for both the pet and the home environment.
+      </p>
+      <img class="sb-frame-image" src="images/Other%20Use.png"
+        alt="Storyboard showing swarm robots cleaning the floor for the cat">
+    </div>
+
+  </div>
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+
+
+</body>
+
+</html>

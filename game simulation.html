@@ -1,0 +1,565 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Swarm Robotics for Cats – Story Room</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: #f5f0e6;
+      font-family: "Comic Sans MS", "Segoe Print", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .container {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #fdfaf4 0%, #f3ecdf 55%, #e9decd 100%);
+      position: relative;
+    }
+
+    #roomCanvas {
+      border: 3px solid #554034;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      background: #fdf9f1;
+      max-width: 96vw;
+      max-height: 80vh;
+    }
+
+    .overlay-text {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 80%;
+      text-align: center;
+      font-size: 18px;
+      line-height: 1.4;
+      color: #4a3528;
+      text-shadow: 0 2px 4px rgba(255,255,255,0.8);
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(4px);
+      border: 1px dashed #c9b39b;
+      pointer-events: none;
+    }
+
+    .title-bar {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.8);
+      border: 1px dashed #c9b39b;
+      font-size: 16px;
+      color: #5a4235;
+      pointer-events: none;
+    }
+
+    .start-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(245, 240, 230, 0.96);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .start-overlay h1 {
+      margin: 0 0 10px;
+      font-size: 28px;
+      color: #4b3626;
+      text-align: center;
+    }
+
+    .start-overlay p {
+      margin: 0 0 24px;
+      font-size: 16px;
+      color: #6a5140;
+      max-width: 420px;
+      text-align: center;
+    }
+
+    .start-button {
+      padding: 10px 26px;
+      border-radius: 999px;
+      border: 2px solid #4b3626;
+      background: #ffe8b8;
+      cursor: pointer;
+      font-size: 18px;
+      color: #4b3626;
+      box-shadow: 0 4px 0 #c29b6b;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.2s ease;
+    }
+
+    .start-button:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #c29b6b;
+      background: #ffd885;
+    }
+
+    .credits {
+      position: absolute;
+      top: 18px;
+      right: 24px;
+      font-size: 12px;
+      color: #8b6a55;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .end-overlay {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background: rgba(245, 240, 230, 0.96);
+      z-index: 9;
+    }
+
+    .end-overlay h2 {
+      margin: 0 0 10px;
+      font-size: 26px;
+      color: #4b3626;
+    }
+
+    .end-overlay p {
+      margin: 0;
+      font-size: 16px;
+      color: #6a5140;
+      max-width: 420px;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .overlay-text {
+        font-size: 15px;
+      }
+      .title-bar {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <canvas id="roomCanvas" width="960" height="540"></canvas>
+    <div class="title-bar">Swarm Robotics for Cats · Story Room</div>
+    <div class="overlay-text" id="caption"></div>
+    <div class="credits">Hand-drawn style prototype</div>
+
+    <div class="start-overlay" id="startOverlay">
+      <h1>Swarm Robotics for Cats</h1>
+      <p>
+        A hand-drawn story of four soft robots and one curious cat:<br/>
+        Playing · Scent · Feeding · Cleaning
+      </p>
+      <button class="start-button" id="startButton">Start Show</button>
+    </div>
+
+    <div class="end-overlay" id="endOverlay">
+      <h2>Thanks for watching 🐾</h2>
+      <p>This is a hand-drawn style prototype for your swarm robotics room.</p>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("roomCanvas");
+    const ctx = canvas.getContext("2d");
+    const captionEl = document.getElementById("caption");
+    const startOverlay = document.getElementById("startOverlay");
+    const startButton = document.getElementById("startButton");
+    const endOverlay = document.getElementById("endOverlay");
+
+    const W = canvas.width;
+    const H = canvas.height;
+
+    const SCENE_COUNT = 4;
+    const FADE_TOTAL = 4000;
+    const SCENE_VISIBLE = 8000;
+    const SCENE_TOTAL = FADE_TOTAL + SCENE_VISIBLE;
+
+    let startTime = null;
+    let animationRunning = false;
+    let overallFinished = false;
+
+    function drawRoomBackground() {
+      // wall
+      const gradient = ctx.createLinearGradient(0, 0, 0, H);
+      gradient.addColorStop(0, "#fdf7ec");
+      gradient.addColorStop(0.6, "#f3e4cf");
+      gradient.addColorStop(1, "#dcc7a9");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, W, H);
+
+      // floor line
+      ctx.strokeStyle = "#b1916e";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(0, H * 0.65);
+      ctx.lineTo(W, H * 0.65);
+      ctx.stroke();
+
+      // a carpet
+      ctx.save();
+      ctx.translate(W * 0.5, H * 0.78);
+      ctx.rotate(-0.03);
+      ctx.fillStyle = "#f5d9aa";
+      ctx.strokeStyle = "#b28756";
+      ctx.lineWidth = 2;
+      roundRect(ctx, -260, -40, 520, 120, 30);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      // simple wall frames
+      ctx.strokeStyle = "#b9a18a";
+      ctx.lineWidth = 2;
+      roundRect(ctx, W * 0.12, H * 0.12, 120, 80, 16);
+      roundRect(ctx, W * 0.72, H * 0.1, 140, 90, 18);
+      ctx.stroke();
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+    }
+
+    function drawCat(x, y, mood, t) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(1.0 + 0.02 * Math.sin(t / 200), 1.0 + 0.02 * Math.cos(t / 230));
+
+      // body
+      ctx.fillStyle = "#ffe3b2";
+      ctx.strokeStyle = "#7a583a";
+      ctx.lineWidth = 2;
+      roundRect(ctx, -35, -20, 70, 45, 18);
+      ctx.fill();
+      ctx.stroke();
+
+      // head
+      ctx.beginPath();
+      ctx.arc(0, -38, 22, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // ears
+      ctx.beginPath();
+      ctx.moveTo(-15, -52);
+      ctx.lineTo(-25, -68);
+      ctx.lineTo(-5, -56);
+      ctx.closePath();
+      ctx.moveTo(15, -52);
+      ctx.lineTo(25, -68);
+      ctx.lineTo(5, -56);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // face
+      ctx.fillStyle = "#5b3c28";
+      ctx.beginPath();
+      ctx.arc(-7, -40, 2.8, 0, Math.PI * 2);
+      ctx.arc(7, -40, 2.8, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = "#5b3c28";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      if (mood === "happy") {
+        ctx.arc(0, -32, 6, 0, Math.PI, false);
+      } else {
+        ctx.moveTo(-5, -30);
+        ctx.lineTo(5, -30);
+      }
+      ctx.stroke();
+
+      // tail
+      ctx.strokeStyle = "#7a583a";
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(34, -8);
+      ctx.quadraticCurveTo(52, -24, 40, -42);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function drawRobot(x, y, colorCore, label, t) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(1.0 + 0.02 * Math.sin(t / 240), 1.0 + 0.02 * Math.cos(t / 210));
+
+      ctx.fillStyle = "#fdf7ec";
+      ctx.strokeStyle = "#6a4c32";
+      ctx.lineWidth = 2;
+      roundRect(ctx, -28, -18, 56, 36, 14);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = colorCore;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 16, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = "#c8b59a";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-18, 16);
+      ctx.lineTo(-26, 24);
+      ctx.moveTo(18, 16);
+      ctx.lineTo(26, 24);
+      ctx.stroke();
+
+      ctx.fillStyle = "#5f4734";
+      ctx.font = "10px 'Segoe UI', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(label, 0, -22);
+
+      ctx.restore();
+    }
+
+    function drawScent(x, y, t) {
+      const baseRadius = 10 + 4 * Math.sin(t / 180);
+      ctx.save();
+      ctx.translate(x, y);
+      for (let i = 0; i < 4; i++) {
+        const r = baseRadius + i * 8;
+        ctx.strokeStyle = "rgba(190, 150, 120," + (0.55 - i * 0.12) + ")";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, r * 1.4, r, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function drawFood(x, y, t, progress) {
+      const seedCount = 8;
+      for (let i = 0; i < seedCount; i++) {
+        const localP = Math.min(1, Math.max(0, progress * 1.2 - i * 0.08));
+        const dropY = y + localP * 60;
+        ctx.fillStyle = "#d9a15d";
+        ctx.beginPath();
+        ctx.arc(x + (i - seedCount / 2) * 7, dropY, 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function drawFurDots(areaY, t, cleanedProgress) {
+      const rows = 5;
+      const cols = 24;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const idx = r * cols + c;
+          const colNormalized = c / (cols - 1);
+          if (colNormalized < cleanedProgress) continue;
+          const x = 80 + c * 30;
+          const y = areaY + r * 10 + 6 * Math.sin((t / 400) + r);
+          ctx.fillStyle = "rgba(150,120,95,0.75)";
+          ctx.beginPath();
+          ctx.arc(x, y, 2 + (idx % 2), 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+
+    function getSceneInfo(sceneIndex) {
+      switch (sceneIndex) {
+        case 1:
+          return {
+            title: "Playing Robot",
+            caption: "The Playing Robot darts across the room. The curious cat chases after it, running joyfully around the space."
+          };
+        case 2:
+          return {
+            title: "Scent Robot",
+            caption: "The Scent Robot moves gently to the cat’s side, releasing soft waves of fragrance. The cat relaxes and looks very happy."
+          };
+        case 3:
+          return {
+            title: "Feeding Robot",
+            caption: "The Feeding Robot comes closer, dropping small pieces of cat food. The cat snacks contentedly beside it."
+          };
+        case 4:
+          return {
+            title: "Cleaning Robot",
+            caption: "The Cleaning Robot glides back and forth, sweeping away scattered fur. When it finishes, the floor looks tidy and clean."
+          };
+        default:
+          return { title: "", caption: "" };
+      }
+    }
+
+    function drawScene1(t, localVisibleTime) {
+      const roomYCat = H * 0.7;
+      const roomYRobot = H * 0.73;
+
+      const cycle = 4000;
+      const phase = (localVisibleTime % cycle) / cycle;
+      const pathWidth = W * 0.65;
+      const startX = W * 0.18;
+      const endX = startX + pathWidth;
+      const robotX = startX + pathWidth * phase;
+      const catX = robotX - 80;
+
+      drawCat(catX, roomYCat, "happy", t);
+      drawRobot(robotX, roomYRobot, "#ffb870", "Play", t);
+    }
+
+    function drawScene2(t, localVisibleTime) {
+      const roomYCat = H * 0.7;
+      const roomYRobot = H * 0.73;
+
+      const startX = W * 0.2;
+      const endX = W * 0.46;
+      const moveDuration = 4000;
+      const moveProgress = Math.min(1, localVisibleTime / moveDuration);
+      const robotX = startX + (endX - startX) * moveProgress;
+
+      const nearCat = moveProgress > 0.7;
+      drawCat(W * 0.5, roomYCat, nearCat ? "happy" : "neutral", t);
+      drawRobot(robotX, roomYRobot, "#b2d8ff", "Scent", t);
+
+      if (nearCat) {
+        drawScent(robotX + 10, roomYRobot - 30, t);
+      }
+    }
+
+    function drawScene3(t, localVisibleTime) {
+      const roomYCat = H * 0.7;
+      const roomYRobot = H * 0.73;
+
+      const startX = W * 0.82;
+      const endX = W * 0.55;
+      const moveDuration = 4000;
+      const moveProgress = Math.min(1, localVisibleTime / moveDuration);
+      const robotX = startX + (endX - startX) * moveProgress;
+
+      drawCat(W * 0.5, roomYCat, "happy", t);
+      drawRobot(robotX, roomYRobot, "#ffd1a8", "Food", t);
+
+      const foodProgress = Math.max(0, (localVisibleTime - 1500) / (SCENE_VISIBLE - 1500));
+      drawFood(robotX, roomYRobot - 10, t, foodProgress);
+    }
+
+    function drawScene4(t, localVisibleTime) {
+      const floorY = H * 0.78;
+      const startX = W * 0.18;
+      const endX = W * 0.82;
+      const backAndForthPeriod = 3500;
+      const cyc = (localVisibleTime % backAndForthPeriod) / backAndForthPeriod;
+      const direction = Math.floor(localVisibleTime / backAndForthPeriod) % 2 === 0 ? 1 : -1;
+      const robotX = direction === 1
+        ? startX + (endX - startX) * cyc
+        : endX - (endX - startX) * cyc;
+
+      const cleanedProgress = Math.min(1, localVisibleTime / SCENE_VISIBLE);
+
+      drawFurDots(floorY, t, cleanedProgress);
+      drawRobot(robotX, floorY - 8, "#c5f0c1", "Clean", t);
+    }
+
+    function drawScene(sceneIndex, t, localVisibleTime) {
+      switch (sceneIndex) {
+        case 1:
+          drawScene1(t, localVisibleTime);
+          break;
+        case 2:
+          drawScene2(t, localVisibleTime);
+          break;
+        case 3:
+          drawScene3(t, localVisibleTime);
+          break;
+        case 4:
+          drawScene4(t, localVisibleTime);
+          break;
+      }
+    }
+
+    function updateCaption(sceneIndex) {
+      const info = getSceneInfo(sceneIndex);
+      captionEl.textContent = info.caption;
+    }
+
+    function render(timestamp) {
+      if (!animationRunning) return;
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+
+      const totalDuration = SCENE_TOTAL * SCENE_COUNT;
+      if (elapsed >= totalDuration) {
+        animationRunning = false;
+        overallFinished = true;
+        endOverlay.style.display = "flex";
+        captionEl.textContent = "";
+        return;
+      }
+
+      ctx.clearRect(0, 0, W, H);
+      drawRoomBackground();
+
+      const sceneIndex = Math.floor(elapsed / SCENE_TOTAL) + 1;
+      const sceneElapsed = elapsed % SCENE_TOTAL;
+
+      let alpha = 1;
+      if (sceneElapsed < FADE_TOTAL / 2) {
+        alpha = sceneElapsed / (FADE_TOTAL / 2);
+      } else if (sceneElapsed > SCENE_TOTAL - FADE_TOTAL / 2) {
+        alpha = (SCENE_TOTAL - sceneElapsed) / (FADE_TOTAL / 2);
+      }
+      alpha = Math.max(0, Math.min(1, alpha));
+
+      const localVisibleTime = Math.max(0, Math.min(sceneElapsed - FADE_TOTAL / 2, SCENE_VISIBLE));
+
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      drawScene(sceneIndex, timestamp, localVisibleTime);
+      ctx.restore();
+
+      if (alpha > 0.2) {
+        updateCaption(sceneIndex);
+        captionEl.style.opacity = alpha.toFixed(2);
+      } else {
+        captionEl.style.opacity = 0;
+      }
+
+      requestAnimationFrame(render);
+    }
+
+    startButton.addEventListener("click", () => {
+      startOverlay.style.display = "none";
+      endOverlay.style.display = "none";
+      captionEl.style.opacity = 1;
+      startTime = null;
+      animationRunning = true;
+      overallFinished = false;
+      requestAnimationFrame(render);
+    });
+  </script>
+</body>
+</html>

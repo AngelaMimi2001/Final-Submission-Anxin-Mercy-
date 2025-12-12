@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Prototype</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at 30% 30%, rgba(0, 255, 200, 0.15), transparent 60%),
+                radial-gradient(circle at 70% 70%, rgba(150, 0, 255, 0.1), transparent 60%),
+                #000;
+            color: #fff;
+            text-align: center;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 18vh 10vw 8vh;
+        }
+
+        h1 {
+            font-size: 3.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ffc6, #a370ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+            text-shadow: 0 0 15px rgba(150, 0, 255, 0.3);
+        }
+
+        h2 {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 0.15em;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+        }
+
+        p {
+            max-width: 900px;
+            margin: 0 auto 2rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            font-weight: 300;
+            line-height: 1.8;
+        }
+
+        body p {
+            text-align: left;
+        }
+
+        .sb-section-heading {
+            font-size: 1.2rem;
+            color: #00ffc6;
+            margin: 3rem auto 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .proto-image-wrapper {
+            width: 100%;
+            max-width: 1000px;
+            margin: 2rem auto 4rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .proto-image {
+            width: 100%;
+            max-width: 1000px;
+            height: auto;
+            border-radius: 16px;
+        }
+
+        .small-img {
+            width: 85%;
+        }
+
+        .sm {
+            width: 35%;
+        }
+
+        .left-align {
+            text-align: left;
+            max-width: 900px;
+            margin: 0 auto 2rem;
+        }
+
+
+        .idea-list {
+            list-style: disc;
+            padding-left: 1.5rem;
+            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            font-weight: 300;
+            line-height: 1.8;
+            text-align: left;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+
+        .insights {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+            max-width: 1300px;
+            margin: 1.5rem auto 2rem;
+        }
+
+        .block {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 2rem;
+            border-radius: 1.5rem;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .block:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0 24px rgba(0, 255, 200, 0.12);
+        }
+
+        .block h3 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.03em;
+            color: #00f5c2;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <!-- Idea Development -->
+    <h1>Idea Development</h1>
+
+    <div class="left-align">
+        <p>
+            Our system grows from studying natural feline behaviors and translating them into robotic functions
+            that support a cat’s physical and emotional needs.
+        </p>
+
+        <h2>Key Points</h2>
+
+        <ul class="idea-list">
+            <li>Inspired by wild cat instincts: play, hunt, smell, clean</li>
+            <li>Each instinct maps directly to a corresponding robot module</li>
+            <li>Cat-owner pain points guide functional priorities</li>
+            <li>Base station acts as the “territory center” for resources and coordination</li>
+        </ul>
+    </div>
+
+    <div class="proto-image-wrapper">
+        <img class="proto-image" src="images/idea1.png" alt="Idea development diagram">
+    </div>
+
+
+    <!-- Prototype Overview -->
+    <h1>Technical Diagrams</h1>
+    <p>
+        This part demonstrates the technical details of a modular swarm-robotics ecosystem. The system architecture
+        diagrams and
+        section views below illustrate how hardware and mechanisms integrate to support autonomous, coordinated, and
+        safe
+        interactions with cats.
+    </p>
+
+    <div class="proto-image-wrapper">
+        <img class="proto-image sm" src="images/t00.png">
+    </div>
+
+
+    <!-- 1. Sensing Layer -->
+    <h3 class="sb-section-heading">1. Sensing Layer</h3>
+
+    <h2>Purpose</h2>
+    <p>
+        Provides environmental awareness and ensures safe navigation when robots interact with cats, humans, and
+        furniture.
+    </p>
+
+    <h2>Description</h2>
+    <p>
+        This diagram shows how infrared, ultrasonic, and ToF sensors work together to provide cross-validated distance
+        perception, enabling the robots to detect obstacles accurately at different ranges and under different lighting
+        conditions. BLE/RFID modules allow robots to recognize nearby units and maintain spacing, while the IMU helps
+        stabilize the robot by detecting tipping or unexpected impacts.
+    </p>
+
+    <div class="proto-image-wrapper">
+        <img class="proto-image" src="images/t1.png" alt="Sensing Layer architecture diagram">
+    </div>
+
+    <!-- 2. Mesh Communication Layer -->
+    <h3 class="sb-section-heading">2. Mesh Communication Layer</h3>
+
+    <h2>Purpose</h2>
+    <p>
+        Allows all robots to share status, synchronize actions, and operate as a coordinated swarm.
+    </p>
+
+    <h2>Description</h2>
+    <p>
+        This diagram illustrates the hybrid communication system combining Bluetooth Mesh, ESP-NOW, and BLE Advertising.
+        Each protocol supports a different communication need: global state sharing, ultrafast action-level updates, and
+        lightweight broadcasts. Together, they ensure every robot receives consistent information and can respond in
+        real
+        time to environmental changes or task transitions.
+    </p>
+
+    <div class="proto-image-wrapper">
+        <img class="proto-image small-img" src="images/t2.png">
+
+    </div>
+
+    <!-- 3. Functional Diagram & Section View -->
+    <h3 class="sb-section-heading">3. Functional Diagram &amp; Section View</h3>
+
+    <!-- 3.1 Playing Robot -->
+    <h3 class="sb-section-heading">3.1 Playing Robot</h3>
+
+    <h2>Purpose</h2>
+    <p>
+        Shows how sensing, actuation, and control modules integrate to create an engaging, fast-moving play behavior for
+        the
+        cat.
+    </p>
+
+    <h2>Description</h2>
+    <p>
+        This diagram highlights how the Playing Robot combines vertical lift actuation, high-torque motorized movement,
+        position sensing, and optional LED/audio modules to create dynamic chase interactions. The section view on the
+        right reveals the mechanical stacking of sensors, motors, encoders, and the ESP32 controller, illustrating how
+        the
+        entire system supports precise movement and safe play.
+    </p>
+
+    <div class="proto-image-wrapper">
+        <img class="proto-image" src="images/t3.png" alt="Playing robot functional diagram and section view">
+    </div>
+
+    <!-- 3.2 Cleaning Robot -->
+    <h3 class="sb-section-heading">3.2 Cleaning Robot</h3>
+
+    <h2>Purpose</h2>
+    <p>
+        Demonstrates how the robot performs floor cleaning tasks by integrating brushes, suction modules, and movement
+        control.
+    </p>
+
+    <h2>Description</h2>
+    <p>
+        This diagram shows how the Cleaning Robot uses a roller brush, edge brushes, and a mini vacuum module to collect
+        fur and debris. Wheel encoders and sensing data guide the robot’s path to prevent repeated cleaning of the same
+        area. The section view reveals the layout of the vacuum chamber, motors, sensors, and ESP32 electronics that
+        support coordinated cleaning behaviors.
+    </p>
+
+    <div class="proto-image-wrapper">
+        <img class="proto-image" src="images/t4.png" alt="Cleaning robot functional diagram and section view">
+    </div>
+
+    <!-- 3.3 Scent Robot -->
+    <h3 class="sb-section-heading">3.3 Scent Robot</h3>
+
+    <h2>Purpose</h2>
+    <p>
+        Explains how the robot produces and distributes calming scents during interactions with the cat.
+    </p>
+
+    <h2>Description</h2>
+    <p>
+        This diagram presents the scent-dispersion system composed of an ultrasonic aroma diffuser, a Peltier heating
+        module for boosting scent intensity, and a low-noise airflow fan for smooth diffusion. The section view
+        demonstrates how these components integrate with the sensing and motor layers, allowing the robot to position
+        itself beside the cat before releasing the scent.
+    </p>
+
+    <div class="proto-image-wrapper">
+        <img class="proto-image" src="images/t5.png" alt="Scent robot functional diagram and section view">
+    </div>
+
+    <!-- 3.4 Feeding Robot -->
+    <h3 class="sb-section-heading">3.4 Feeding Robot</h3>
+
+    <h2>Purpose</h2>
+    <p>
+        Shows how the robot safely dispenses dry food in controlled amounts.
+    </p>
+
+    <h2>Description</h2>
+    <p>
+        This diagram illustrates the food-dispensing mechanism built around a stepper motor, a servo-controlled lid, and
+        a
+        load cell for measuring remaining food. Ultrasonic and ToF sensors detect the cat’s presence to trigger
+        dispensing.
+        The structural section view highlights the physical arrangement of the food storage container, dispensing unit,
+        electronics, and movement system.
+    </p>
+
+    <div class="proto-image-wrapper">
+        <img class="proto-image" src="images/t6.png" alt="Feeding robot functional diagram and section view">
+    </div>
+
+    <!-- 4. Base Station Layer -->
+    <h3 class="sb-section-heading">4. Base Station Layer</h3>
+
+    <h2>Purpose</h2>
+    <p>
+        Supports all robots with wireless charging, robot identification, and long-range connectivity.
+    </p>
+
+    <h2>Description</h2>
+    <p>
+        This diagram shows the architecture of the base station, which integrates Qi wireless charging coils, NFC
+        docking
+        identification, a power-management board, and a LoRa/BLE gateway for extended communication range. The section
+        view
+        displays how these elements stack to form a unified hub that charges the robots, identifies which unit has
+        docked,
+        and relays network data.
+    </p>
+
+    <div class="proto-image-wrapper">
+        <img class="proto-image" src="images/t7.png" alt="Base station layer diagram and section view">
+    </div>
+
+    <!-- PRODUCT DESIGN -->
+    <h1>Product Design</h1>
+
+    <!-- SECTION 1 -->
+    <h3 class="sb-section-heading">Design Sketch Exploration</h3>
+
+    <div class="left-align">
+        <p>
+            Our early sketches explore different designs, modular arrangements, and transformation
+            possibilities. These drawings helped us define how each robot might move, combine, and shift
+            form while maintaining a cohesive system identity.
+        </p>
+
+        <ul class="idea-list">
+            <li>Iterated multiple silhouettes to find the right softness</li>
+            <li>Explored modular clustering and separation</li>
+            <li>Used fast sketching to discover overall form direction</li>
+        </ul>
+    </div>
+
+    <div class="proto-image-wrapper">
+        <img class="proto-image" src="images/d1.png" alt="Design sketch exploration">
+    </div>
+
+
+    <!-- SECTION 2 -->
+    <h3 class="sb-section-heading">Bubble-Inspired Form Language</h3>
+
+    <div class="left-align">
+        <p>
+            The naturally merging shapes of soap bubbles inspired our soft and playful form language.
+            Their seamless clustering informed how our robot modules should blend visually when grouped.
+        </p>
+
+        <ul class="idea-list">
+            <li>Soft, organic curvature for a friendly aesthetic</li>
+            <li>Bubble clusters guide how modules visually merge</li>
+            <li>Avoids mechanical appearance, emphasizes playfulness</li>
+            <li>Supports visual unity when robots reorganize dynamically</li>
+        </ul>
+    </div>
+
+    <div class="proto-image-wrapper">
+        <img class="proto-image" src="images/d2.png" alt="Bubble-inspired design direction">
+    </div>
+
+
+    <!-- SECTION 3 -->
+    <h3 class="sb-section-heading">3D Form Development</h3>
+
+    <div class="left-align">
+        <p>
+            We created 3D models to refine the soft, playful bubble-like geometry.
+            The forms maintain a cohesive aesthetic whether the modules stand alone or
+            cluster together as a group.
+        </p>
+
+    </div>
+
+    <div class="proto-image-wrapper">
+        <img class="proto-image" src="images/d3.png" alt="3D form development variations">
+    </div>
+
+
+    <!-- SECTION 4 -->
+    <h3 class="sb-section-heading">Morphological Arrangement</h3>
+
+    <div class="left-align">
+        <p>
+            We simulated multiple arrangement patterns to study how the four modules re-organize during
+            movement. These patterns ensure the formations remain intentional and visually coherent even
+            as robots transition between tasks.
+        </p>
+
+        <ul class="idea-list">
+            <li>Explored linear, triangular, and clustered configurations</li>
+            <li>Verified smooth transitions between arrangements during motion</li>
+
+        </ul>
+    </div>
+
+    <div class="proto-image-wrapper">
+        <img class="proto-image" src="images/d4.png" alt="Morphological arrangement patterns">
+    </div>
+
+
+    <!-- SECTION 5 -->
+    <h3 class="sb-section-heading">Material Strategy</h3>
+
+    <div class="left-align">
+        <p>
+            Material selection balances softness, safety, and internal structural strength. This ensures
+            the robots feel approachable while remaining durable and mechanically reliable.
+        </p>
+
+        <ul class="idea-list">
+            <li><strong>Fabric-Reinforced Silicone</strong>: soft, gentle, furniture-safe, cat-safe, playful texture
+            </li>
+            <li><strong>ABS Structure</strong>: rigid internal support, durable, required for electronic protection</li>
+        </ul>
+    </div>
+
+    <div class="proto-image-wrapper">
+        <img class="proto-image" src="images/d5.png" alt="Material selections">
+    </div>
+
+
+    <!-- CHALLENGES & ASPIRATIONS -->
+    <h1>Challenges and Aspirations</h1>
+
+    <!-- TECHNICAL PART -->
+    <h3 class="sb-section-heading">Technical Part</h3>
+
+    <h2>Challenges</h2>
+    <div class="insights">
+
+        <div class="block">
+            <h3>Maintaining Stable Multi-Robot Communication</h3>
+            <p>
+                It might be difficult to keep all four robots synchronized when they moved quickly or were
+                separated by furniture, as wireless signals weakened or arrived at different times.
+            </p>
+        </div>
+
+        <div class="block">
+            <h3>Sensor Reliability Around Real Cats</h3>
+            <p>
+                Fur and sudden motion might caused IR, ultrasonic, and ToF sensors to
+                produce inconsistent readings, making obstacle detection less reliable.
+            </p>
+        </div>
+
+        <div class="block">
+            <h3>Fitting Hardware into a Small Soft Form</h3>
+            <p>
+                Motors, sensors, batteries, and PCBs all needed to fit inside a small rounded shell,
+                probably creating heat, spacing, and mounting challenges.
+            </p>
+        </div>
+
+    </div>
+
+    <h2>Aspirations</h2>
+    <div class="insights">
+
+        <div class="block">
+            <h3>Smarter Behavior Adaptation</h3>
+            <p>
+                We hope the robots can one day adjust actions based on the cat’s activity patterns or
+                mood signals, rather than following fixed routines.
+            </p>
+        </div>
+
+        <div class="block">
+            <h3>More Autonomous Swarm Coordination</h3>
+            <p>
+                We aim to develop self-organizing swarm behaviors so robots can switch roles or recover
+                from errors without manual control.
+            </p>
+        </div>
+
+        <div class="block">
+            <h3>More Robust Fault Detection & Recovery</h3>
+            <p>
+                We aim to allow each robot to detect motor
+                stalls, sensor failures, or communication drops, and recover actions automatically
+                without interrupting the swarm.
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- PRODUCT DESIGN PART -->
+    <h3 class="sb-section-heading">Product Design Part</h3>
+
+    <h2>Challenges</h2>
+    <div class="insights">
+
+        <div class="block">
+            <h3>Balancing Soft Aesthetics with Functional Openings</h3>
+            <p>
+                Adding vents, sensors, or feeding openings risked breaking the smooth bubble-like
+                form we wanted to maintain.
+            </p>
+        </div>
+
+        <div class="block">
+            <h3>Consistent Aesthetics Across Different Formations</h3>
+            <p>
+                Because robots constantly move and regroup, some arrangements looked unbalanced
+                until proportions and spacing were refined.
+            </p>
+        </div>
+
+        <div class="block">
+            <h3>Material Balance Between Softness and Structure</h3>
+            <p>
+                Silicone offered softness but lacked precision; ABS offered structure but risked
+                looking too rigid.
+            </p>
+        </div>
+
+    </div>
+
+    <h2>Aspirations</h2>
+    <div class="insights">
+
+        <div class="block">
+            <h3>More Expressive and “Alive” Surfaces</h3>
+            <p>
+                We hope future versions can include subtle movements or lighting cues to give the
+                robots a more lifelike presence.
+            </p>
+        </div>
+
+        <div class="block">
+            <h3>Clearer Visual Identity When Robots Cluster</h3>
+            <p>
+                We aim to use color gradients or geometric cues that create recognizable
+                patterns when modules form groups.
+            </p>
+        </div>
+
+        <div class="block">
+            <h3>More Durable Soft Materials for Real Pet Use</h3>
+            <p>
+                We want materials that stay soft but are more resistant to scratches, bites,
+                and long-term deformation.
+            </p>
+        </div>
+
+    </div>
+
+
+
+</body>
+
+</html>
